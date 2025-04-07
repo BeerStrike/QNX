@@ -4,12 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <hw/inout.h>
-#include <pthread.h>
+
+#include <pthread.h>
 
 volatile uintptr_t timer_base;
 volatile int counter = 0;
 int counter_2=0;
-pthread_t thread_printer_id;
+
+pthread_t thread_printer_id;
 
 void *thread_printer(void *notused){
 	while(1){
@@ -34,13 +36,15 @@ int main() {
     	perror("ThreadCtl");
     	return EXIT_FAILURE;
     }
-    timer_base = (uintptr_t)mmap_device_io(4, 0x80810000); 
+
+    timer_base = (uintptr_t)mmap_device_io(4, 0x80810000); 
     intr = InterruptAttach(0, timer_isr, NULL, 0,0);
     if (intr == -1) {
         perror("InterruptAttach failed");
         return EXIT_FAILURE;
     }
-    period.nsec = 1000000; 
+
+    period.nsec = 1000000; 
     period.fract = 0;
     ClockPeriod(CLOCK_REALTIME, &period, NULL, 0);
     pthread_create(&thread_printer_id,NULL,thread_printer,NULL);
